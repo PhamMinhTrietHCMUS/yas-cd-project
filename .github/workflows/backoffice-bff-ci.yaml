@@ -57,17 +57,14 @@ jobs:
         with:
           name: OWASP Dependency Check Report
           path: ${{github.workspace}}/reports
-      - name: Log in to the Container registry
-        if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push Docker images
-        if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/build-push-action@v6
         with:
           context: ./backoffice-bff
           push: true
-          tags: ghcr.io/nashtech-garage/yas-backoffice-bff:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/yas-backoffice-bff:${{ github.sha }},${{ secrets.DOCKER_USERNAME }}/yas-backoffice-bff:latest
