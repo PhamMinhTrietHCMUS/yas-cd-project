@@ -415,11 +415,13 @@ metadata:
     app.kubernetes.io/part-of: "kiali"
   annotations:
 spec:
+  type: NodePort
   ports:
   - name: http
     appProtocol: http
     protocol: TCP
     port: 20001
+    nodePort: 31874 # <-- ADD THIS LINE
   selector:
     app.kubernetes.io/name: kiali
     app.kubernetes.io/instance: kiali
