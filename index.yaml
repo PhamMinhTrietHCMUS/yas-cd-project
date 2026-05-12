@@ -1,5 +1,20 @@
 apiVersion: v1
 entries:
+  backoffice-bff:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-05-12T08:56:16.450151272Z"
+    dependencies:
+    - name: backend
+      repository: file://../backend
+      version: 0.1.0
+    description: A Helm chart for Kubernetes
+    digest: 2add12382d7fdcc80721e0041500988ba780d5e5af261a5bd5c2d68e837aafee
+    name: backoffice-bff
+    type: application
+    urls:
+    - https://github.com/PhamMinhTrietHCMUS/yas-cd-project/releases/download/backoffice-bff-0.1.0/backoffice-bff-0.1.0.tgz
+    version: 0.1.0
   redis:
   - apiVersion: v2
     created: "2026-05-12T08:45:52.725774371Z"
@@ -14,4 +29,19 @@ entries:
     urls:
     - https://github.com/PhamMinhTrietHCMUS/yas-cd-project/releases/download/redis-0.1.0/redis-0.1.0.tgz
     version: 0.1.0
-generated: "2026-05-12T08:45:52.725782403Z"
+  storefront-bff:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-05-12T08:56:16.637496198Z"
+    dependencies:
+    - name: backend
+      repository: file://../backend
+      version: 0.1.0
+    description: A Helm chart for Kubernetes
+    digest: 76e9410ecfc17314467eaffafcaf2fa7501bfe8760540c814ca9219c3895cad7
+    name: storefront-bff
+    type: application
+    urls:
+    - https://github.com/PhamMinhTrietHCMUS/yas-cd-project/releases/download/storefront-bff-0.1.0/storefront-bff-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-05-12T08:56:16.63750288Z"
