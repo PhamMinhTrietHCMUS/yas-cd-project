@@ -12,6 +12,22 @@ backend:
     enabled: true
     host: backoffice.yas.local.com
     path: /
+  livenessProbe:
+    initialDelaySeconds: 120
+    periodSeconds: 10
+    failureThreshold: 12
+    successThreshold: 1
+    httpGet:
+      path: /actuator/health/liveness
+      port: metric
+  readinessProbe:
+    initialDelaySeconds: 120
+    periodSeconds: 10
+    failureThreshold: 12
+    successThreshold: 1
+    httpGet:
+      path: /actuator/health/readiness
+      port: metric
   extraEnvs:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
