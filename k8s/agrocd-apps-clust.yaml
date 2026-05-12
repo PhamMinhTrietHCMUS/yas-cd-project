@@ -143,10 +143,7 @@ spec:
   source:
     repoURL: 'https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git'
     targetRevision: main
-    path: 'k8s/charts/redis'
-    helm:
-      valueFiles:
-        - values.yaml
+    path: 'k8s/deploy/redis'
   destination:
     server: https://kubernetes.default.svc
     namespace: redis
