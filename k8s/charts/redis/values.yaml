@@ -1,0 +1,12 @@
+redis:
+  auth:
+    enabled: true
+    password: "redis"
+  master:
+    persistence:
+      enabled: false
+  replica:
+    replicaCount: 0
+    persistence:
+      enabled: false
+  architecture: standalone

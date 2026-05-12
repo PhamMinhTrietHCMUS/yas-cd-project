@@ -136,6 +136,30 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: yas-redis
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git'
+    targetRevision: main
+    path: 'k8s/charts/redis'
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: redis
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: istio-base
   namespace: argocd
   annotations:
