@@ -13,6 +13,10 @@ spec:
       - chart: product
       - chart: rating
       - chart: tax
+      - chart: customer      # <-- Add this
+      - chart: media         # <-- Add this
+      - chart: promotion     # <-- Add this
+      - chart: search        # <-- Add this
       - chart: storefront-ui
       - chart: backoffice-ui
       - chart: storefront-bff
@@ -59,6 +63,10 @@ spec:
       - chart: product
       - chart: rating
       - chart: tax
+      - chart: customer      # <-- Add this
+      - chart: media         # <-- Add this
+      - chart: promotion     # <-- Add this
+      - chart: search        # <-- Add this
       - chart: storefront-ui
       - chart: backoffice-ui
       - chart: storefront-bff
