@@ -10,7 +10,8 @@ backend:
       configmap.reloader.stakater.com/reload: "yas-gateway-routes-config-configmap,backoffice-bff-extra-configmap"
   ingress:
     enabled: true
-    className: traefik      # <-- Add this exact line
+    annotations:
+      kubernetes.io/ingress.class: traefik
     host: backoffice.yas.local.com
     path: /
   livenessProbe:

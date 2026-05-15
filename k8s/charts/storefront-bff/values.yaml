@@ -12,7 +12,8 @@ backend:
 
   ingress:
     enabled: true
-    className: traefik      # <-- Add this exact line
+    annotations:
+      kubernetes.io/ingress.class: traefik
     host: storefront.yas.local.com
     path: /
 
