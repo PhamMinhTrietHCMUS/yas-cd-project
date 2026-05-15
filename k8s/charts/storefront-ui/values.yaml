@@ -21,6 +21,7 @@ ui:
       value: http://storefront.yas.local.com/api
   ingress:
     enabled: true
+    className: traefik
     hosts:
       - host: storefront.yas.local.com
         paths:
