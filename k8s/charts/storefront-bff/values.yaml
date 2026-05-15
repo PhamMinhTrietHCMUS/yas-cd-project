@@ -12,6 +12,7 @@ backend:
 
   ingress:
     enabled: true
+    className: traefik      # <-- Add this exact line
     host: storefront.yas.local.com
     path: /
 
