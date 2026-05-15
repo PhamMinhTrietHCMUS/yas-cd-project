@@ -31,13 +31,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Debug Secrets via Base64
-        run: |
-          echo "DOCKER_USERNAME base64:"
-          echo -n "${{ secrets.DOCKER_USERNAME }}" | base64
-          echo "DOCKER_PASSWORD base64:"
-          echo -n "${{ secrets.DOCKER_PASSWORD }}" | base64
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
