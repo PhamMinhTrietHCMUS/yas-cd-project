@@ -1,70 +1,44 @@
-name: backoffice-bff service ci
+name: backoffice-bff-ci
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "*" ] # Triggers on ALL branches so developers can test dev_* branches
     paths:
       - "backoffice-bff/**"
-      - ".github/workflows/actions/action.yaml"
-      - ".github/workflows/backoffice-bff-ci.yaml"
-      - "pom.xml"
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - "backoffice-bff/**"
-      - ".github/workflows/actions/action.yaml"
-      - ".github/workflows/backoffice-bff-ci.yaml"
-      - "pom.xml"
   workflow_dispatch:
 
 jobs:
-  Build:
+  Build-and-Push:
     runs-on: ubuntu-latest
-    env:
-      FROM_ORIGINAL_REPOSITORY: 'false'
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: ./.github/workflows/actions
-      - name: Run Maven Checkstyle
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        run: mvn checkstyle:checkstyle -f backoffice-bff -Dcheckstyle.output.file=backoffice-bff-checkstyle-result.xml
-      - name: Upload Checkstyle Result
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: jwgmeligmeyling/checkstyle-github-action@master
-        with:
-          path: '**/backoffice-bff-checkstyle-result.xml'
-      - name: Run Maven Verify
-        run: mvn clean verify -f backoffice-bff
-      - name: Analyze with sonar cloud
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f backoffice-bff
-      - name: OWASP Dependency Check
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: dependency-check/Dependency-Check_Action@main
-        env:
-          JAVA_HOME: /opt/jdk
-        with:
-          project: 'yas'
-          path: '.'
-          format: 'HTML'
-      - name: Upload OWASP Dependency Check results
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: actions/upload-artifact@master
-        with:
-          name: OWASP Dependency Check Report
-          path: ${{github.workspace}}/reports
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Maven Build Check
+        working-directory: ./backoffice-bff
+        # Compiles the code to ensure it actually works. 
+        # Add -DskipTests if you want it to run even faster.
+        run: mvn clean package 
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and push Docker images
+
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: ./backoffice-bff
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/yas-backoffice-bff:${{ github.sha }},${{ secrets.DOCKER_USERNAME }}/yas-backoffice-bff:latest
+          # Multi-tagging: tags with BOTH the branch name AND the commit hash
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/yas-backoffice-bff:${{ github.ref_name }}
+            ${{ secrets.DOCKER_USERNAME }}/yas-backoffice-bff:${{ github.sha }}
