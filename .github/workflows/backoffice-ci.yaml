@@ -1,4 +1,4 @@
-name: backoffice service ci
+name: backoffice-ui-ci
 
 on:
   push:
