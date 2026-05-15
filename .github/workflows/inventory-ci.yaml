@@ -21,11 +21,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Maven Build Check
-        working-directory: ./inventory 
-        # Compiles the code to ensure it actually works. 
-        # Add -DskipTests if you want it to run even faster.
-        run: mvn clean package 
+      - name: Build intentory Service (and dependencies)
+        # Runs from root. -pl specifies the module, -am builds its local dependencies.
+        run: mvn -B clean install -pl intentory -am -DskipTests
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3

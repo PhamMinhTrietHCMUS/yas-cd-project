@@ -21,15 +21,15 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Build Cart Service (and dependencies)
+        # Runs from root. -pl specifies the module, -am builds its local dependencies.
+        run: mvn -B clean install -pl cart -am -DskipTests
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build Cart Service (and dependencies)
-        # Runs from root. -pl specifies the module, -am builds its local dependencies.
-        run: mvn -B clean install -pl cart -am -DskipTests
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6

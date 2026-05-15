@@ -21,11 +21,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Maven Build Check
-        working-directory: ./backoffice-bff
-        # Compiles the code to ensure it actually works. 
-        # Add -DskipTests if you want it to run even faster.
-        run: mvn clean package 
+      - name: Build backoffice-bff Service (and dependencies)
+        # Runs from root. -pl specifies the module, -am builds its local dependencies.
+        run: mvn -B clean install -pl backoffice-bff -am -DskipTests
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
