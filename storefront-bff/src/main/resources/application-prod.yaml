@@ -6,15 +6,71 @@ spring:
           default-filters:
             - SaveSession
           routes:
-            - id: api
-              uri: http://nginx
+            - id: product
+              uri: http://product
               predicates:
-                - Path=/api/**
+                - Path=/api/product/**
+              filters:
+                - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
+                - TokenRelay=
+                - StripPrefix=1
+            - id: cart
+              uri: http://cart
+              predicates:
+                - Path=/api/cart/**
+              filters:
+                - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
+                - TokenRelay=
+                - StripPrefix=1
+            - id: customer
+              uri: http://customer
+              predicates:
+                - Path=/api/customer/**
+              filters:
+                - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
+                - TokenRelay=
+                - StripPrefix=1
+            - id: order
+              uri: http://order
+              predicates:
+                - Path=/api/order/**
+              filters:
+                - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
+                - TokenRelay=
+                - StripPrefix=1
+            - id: inventory
+              uri: http://inventory
+              predicates:
+                - Path=/api/inventory/**
+              filters:
+                - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
+                - TokenRelay=
+                - StripPrefix=1
+            - id: media
+              uri: http://media
+              predicates:
+                - Path=/api/media/**
+              filters:
+                - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
+                - TokenRelay=
+                - StripPrefix=1
+            - id: search
+              uri: http://search
+              predicates:
+                - Path=/api/search/**
+              filters:
+                - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
+                - TokenRelay=
+                - StripPrefix=1
+            - id: tax
+              uri: http://tax
+              predicates:
+                - Path=/api/tax/**
               filters:
                 - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
                 - TokenRelay=
                 - StripPrefix=1
             - id: nextjs
-              uri: http://storefront-nextjs:3000
+              uri: http://storefront-ui:3000
               predicates:
                 - Path=/**
