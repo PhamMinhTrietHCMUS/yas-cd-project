@@ -28,7 +28,13 @@ spec:
     headers: xforwarded
   ingress:
     enabled: true
-    className: nginx
+    className: traefik   # <--- CHANGE THIS FROM nginx
+    annotations: {}
+    hosts:
+      - host: identity.yas.local.com
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
   unsupported:
     podTemplate:
       spec:
