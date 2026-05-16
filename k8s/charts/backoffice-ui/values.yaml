@@ -5,10 +5,9 @@ ui:
   nameOverride: backoffice-ui
   fullnameOverride: backoffice-ui
   ingress:
-    enabled: true
-    className: traefik
-    hosts:
-      - host: backoffice.yas.local.com
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+    enabled: false
+    # hosts:
+    #   - host: backoffice.yas.local.com
+    #     paths:
+    #       - path: /
+    #         pathType: ImplementationSpecific
