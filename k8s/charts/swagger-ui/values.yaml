@@ -56,7 +56,13 @@ service:
 
 ingress:
   enabled: true
-  className: "nginx"
+  className: "traefik"
+  annotations: {}
+  hosts:
+    - host: api.yas.local.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
   host: api.yas.local.com
   annotations: {}
     # kubernetes.io/ingress.class: nginx
