@@ -49,7 +49,7 @@ spec:
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-backoffice-bff
             ingressHost: staging-backoffice.yas.local.com
-          # 3. UIs (Notice the different imagePath, just like your Jenkins if/else!)
+          # 3. UIs 
           - name: storefront-ui
             imagePath: ui.image.repository
             imageRepo: cibotminhminhchan/yas-storefront
@@ -62,8 +62,6 @@ spec:
           - name: swagger-ui
             imagePath: image.repository
             imageRepo: swaggerapi/swagger-ui
-            # tagPath: image.tag
-            # tagValue: v4.16.0 # Keeping the default swagger tag
             ingressHost: staging-api.yas.local.com
   template:
     metadata:
@@ -76,21 +74,24 @@ spec:
         path: 'k8s/charts/{{name}}'
         helm:
           parameters:
-            # This perfectly injects your Jenkins dynamic variables
             - name: '{{imagePath}}'
               value: '{{imageRepo}}'
-            - name: ingress.hosts[0].host
-              value: '{{ingressHost}}'
-            - name: ingress.hosts[0].paths[0].path
-              value: /
-            - name: ingress.hosts[0].paths[0].pathType
-              value: ImplementationSpecific
             - name: backend.image.pullPolicy
               value: Always
             - name: backend.serviceMonitor.enabled
               value: "false"
             - name: serviceMonitor.enabled
               value: "false"
+          # --- THE UNIVERSAL INGRESS OVERRIDE ---
+          values: |
+            ingress:
+              host: '{{ingressHost}}'
+              hosts:
+                - host: '{{ingressHost}}'
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+          # --------------------------------------
       destination:
         server: https://kubernetes.default.svc
         namespace: staging
