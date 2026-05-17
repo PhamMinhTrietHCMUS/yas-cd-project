@@ -11,49 +11,77 @@ spec:
           - name: yas-configuration
             imagePath: dummy.ignore
             imageRepo: ignore
+            tagPath: dummy.tag.ignore
+            tagValue: ignore
           # 1. Backend Core Services
           - name: product
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-product
+            tagPath: backend.image.tag
+            tagValue: main
           - name: cart
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-cart
+            tagPath: backend.image.tag
+            tagValue: main
           - name: order
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-order
+            tagPath: backend.image.tag
+            tagValue: main
           - name: customer
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-customer
+            tagPath: backend.image.tag
+            tagValue: main
           - name: inventory
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-inventory
+            tagPath: backend.image.tag
+            tagValue: main
           - name: tax
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-tax
+            tagPath: backend.image.tag
+            tagValue: main
           - name: media
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-media
+            tagPath: backend.image.tag
+            tagValue: main
           - name: search
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-search
+            tagPath: backend.image.tag
+            tagValue: main
           # 2. BFFs
           - name: storefront-bff
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-storefront-bff
+            tagPath: backend.image.tag
+            tagValue: main
           - name: backoffice-bff
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-backoffice-bff
+            tagPath: backend.image.tag
+            tagValue: main
           # 3. UIs (Notice the different imagePath, just like your Jenkins if/else!)
           - name: storefront-ui
             imagePath: ui.image.repository
             imageRepo: cibotminhminhchan/yas-storefront
+            tagPath: ui.image.tag
+            tagValue: main
           - name: backoffice-ui
             imagePath: ui.image.repository
             imageRepo: cibotminhminhchan/yas-backoffice
+            tagPath: ui.image.tag
+            tagValue: main
           # 4. Documentation
           - name: swagger-ui
             imagePath: image.repository
             imageRepo: swaggerapi/swagger-ui
+            tagPath: image.tag
+            tagValue: v4.16.0 # Keeping the default swagger tag
   template:
     metadata:
       name: '{{name}}-staging'
@@ -68,6 +96,8 @@ spec:
             # This perfectly injects your Jenkins dynamic variables
             - name: '{{imagePath}}'
               value: '{{imageRepo}}'
+            - name: '{{tagPath}}'         # <--- ADD THIS
+              value: '{{tagValue}}'       # <--- ADD THIS
             - name: backend.image.pullPolicy
               value: Always
             - name: backend.serviceMonitor.enabled
