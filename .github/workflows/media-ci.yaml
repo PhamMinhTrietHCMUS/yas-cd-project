@@ -40,3 +40,22 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/yas-media:${{ github.ref_name }}
             ${{ secrets.DOCKER_USERNAME }}/yas-media:${{ github.sha }}
+      
+      - name: Update Helm Values & Push to Git (GitOps Write-Back)
+        run: |
+          # 1. Setup a bot Git Identity
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+
+          # 2. Update the repository (using | as delimiter because of the slash in the image name)
+          sed -i 's|repository: .*|repository: cibotminhminhchan/yas-media|' k8s/charts/media/values.yaml
+
+          # 3. Update the tag
+          sed -i 's/tag: .*/tag: "${{ github.sha }}"/' k8s/charts/media/values.yaml
+
+          # 4. Add, Commit, and Push the change
+          git add k8s/charts/media/values.yaml
+          git commit -m "chore(media): update image and tag to ${{ github.sha }} [skip ci]"
+          
+          # Push back to the branch that triggered the action
+          git push origin HEAD:${{ github.ref_name }}
