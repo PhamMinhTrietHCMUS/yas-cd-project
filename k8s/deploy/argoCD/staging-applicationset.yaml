@@ -7,12 +7,6 @@ spec:
   generators:
     - list:
         elements:
-          # 0. The Configuration (Must be present for BFFs to find Keycloak)
-          - name: yas-configuration
-            imagePath: dummy.ignore
-            imageRepo: ignore
-            tagPath: dummy.tag.ignore
-            tagValue: ignore
           # 1. Backend Core Services
           - name: product
             imagePath: backend.image.repository
