@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: api.yas.local.com
+    - host: {{ .Values.apiHostname | default "api.yas.local.com" }}
       http:
         paths:
           - path: /product
