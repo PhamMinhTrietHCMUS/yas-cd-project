@@ -57,5 +57,23 @@ jobs:
           git add k8s/charts/tax/values.yaml
           git commit -m "chore(tax): update image and tag to ${{ github.sha }} [skip ci]"
           
-          # Push back to the branch that triggered the action
-          git push origin HEAD:${{ github.ref_name }}
+          # 5. The GitOps Push Retry Loop
+          # Try to push up to 5 times to bypass race conditions
+          for i in {1..5}; do
+            # Pull the latest changes and stack our commit on top of them
+            git pull --rebase origin ${{ github.ref_name }}
+            
+            # Try to push. If it succeeds, exit the script cleanly.
+            if git push origin HEAD:${{ github.ref_name }}; then
+              echo "✅ GitOps Write-Back successful on attempt $i"
+              exit 0
+            fi
+            
+            # If it fails, wait a few seconds and try again
+            echo "⚠️ Push collision detected. Retrying in 3 seconds..."
+            sleep 3
+          done
+          
+          # If it fails 5 times, crash the pipeline so you know something is wrong
+          echo "❌ Failed to push after 5 attempts."
+          exit 1
