@@ -46,6 +46,8 @@ jobs:
           # 1. Setup a bot Git Identity
           git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
+          git config rebase.autoStash true
+          git restore .
 
           # 2. Update the repository (using | as delimiter because of the slash in the image name)
           sed -i 's|repository: .*|repository: cibotminhminhchan/yas-tax|' k8s/charts/tax/values.yaml
