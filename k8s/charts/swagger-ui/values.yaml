@@ -59,11 +59,11 @@ ingress:
   className: "traefik"
   annotations: {}
   hosts:
-    - host: api.yas.local.com
+    - host: swagger.yas.local.com
       paths:
         - path: /
           pathType: ImplementationSpecific
-  host: api.yas.local.com
+  host: swagger.yas.local.com
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
