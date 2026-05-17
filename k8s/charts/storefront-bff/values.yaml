@@ -1,7 +1,7 @@
 backend:
   image:
-    repository: ghcr.io/nashtech-garage/yas-storefront-bff
-    tag: latest
+    repository: cibotminhminhchan/yas-storefront-bff
+    tag: "3124adab27bc51d8e3fa4645c972d80e71611f56"
 
   nameOverride: storefront-bff
   fullnameOverride: storefront-bff
