@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: yas-staging-apps
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
+      revision: HEAD
+      directories:
+      - path: k8s/charts/*
+  template:
+    metadata:
+      name: '{{path.basename}}-staging'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: staging
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
