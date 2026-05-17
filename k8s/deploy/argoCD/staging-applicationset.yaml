@@ -5,20 +5,75 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - git:
-      repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
-      revision: HEAD
-      directories:
-      - path: k8s/charts/*
+    - list:
+        elements:
+          # 0. The Configuration (Must be present for BFFs to find Keycloak)
+          - name: yas-configuration
+            imagePath: dummy.ignore
+            imageRepo: ignore
+          # 1. Backend Core Services
+          - name: product
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-product
+          - name: cart
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-cart
+          - name: order
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-order
+          - name: customer
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-customer
+          - name: inventory
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-inventory
+          - name: tax
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-tax
+          - name: media
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-media
+          - name: search
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-search
+          # 2. BFFs
+          - name: storefront-bff
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-storefront-bff
+          - name: backoffice-bff
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-backoffice-bff
+          # 3. UIs (Notice the different imagePath, just like your Jenkins if/else!)
+          - name: storefront-ui
+            imagePath: ui.image.repository
+            imageRepo: cibotminhminhchan/yas-storefront
+          - name: backoffice-ui
+            imagePath: ui.image.repository
+            imageRepo: cibotminhminhchan/yas-backoffice
+          # 4. Documentation
+          - name: swagger-ui
+            imagePath: image.repository
+            imageRepo: swaggerapi/swagger-ui
   template:
     metadata:
-      name: '{{path.basename}}-staging'
+      name: '{{name}}-staging'
     spec:
       project: default
       source:
         repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
         targetRevision: HEAD
-        path: '{{path}}'
+        path: 'k8s/charts/{{name}}'
+        helm:
+          parameters:
+            # This perfectly injects your Jenkins dynamic variables
+            - name: '{{imagePath}}'
+              value: '{{imageRepo}}'
+            - name: backend.image.pullPolicy
+              value: Always
+            - name: backend.serviceMonitor.enabled
+              value: "false"
+            - name: serviceMonitor.enabled
+              value: "false"
       destination:
         server: https://kubernetes.default.svc
         namespace: staging
@@ -27,4 +82,4 @@ spec:
           prune: true
           selfHeal: true
         syncOptions:
-        - CreateNamespace=true
+          - CreateNamespace=true
