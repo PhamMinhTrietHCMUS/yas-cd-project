@@ -17,71 +17,60 @@ spec:
           - name: product
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-product
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: internal-only.local
           - name: cart
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-cart
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: internal-only.local
           - name: order
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-order
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: internal-only.local
           - name: customer
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-customer
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: internal-only.local
           - name: inventory
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-inventory
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: internal-only.local
           - name: tax
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-tax
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: internal-only.local
           - name: media
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-media
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: internal-only.local
           - name: search
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-search
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: internal-only.local
           # 2. BFFs
           - name: storefront-bff
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-storefront-bff
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: staging-storefront.yas.local.com
           - name: backoffice-bff
             imagePath: backend.image.repository
             imageRepo: cibotminhminhchan/yas-backoffice-bff
-            tagPath: backend.image.tag
-            tagValue: main
+            ingressHost: staging-backoffice.yas.local.com
           # 3. UIs (Notice the different imagePath, just like your Jenkins if/else!)
           - name: storefront-ui
             imagePath: ui.image.repository
             imageRepo: cibotminhminhchan/yas-storefront
-            tagPath: ui.image.tag
-            tagValue: main
+            ingressHost: staging-storefront.yas.local.com
           - name: backoffice-ui
             imagePath: ui.image.repository
             imageRepo: cibotminhminhchan/yas-backoffice
-            tagPath: ui.image.tag
-            tagValue: main
+            ingressHost: staging-backoffice.yas.local.com
           # 4. Documentation
           - name: swagger-ui
             imagePath: image.repository
             imageRepo: swaggerapi/swagger-ui
-            tagPath: image.tag
-            tagValue: v4.16.0 # Keeping the default swagger tag
+            # tagPath: image.tag
+            # tagValue: v4.16.0 # Keeping the default swagger tag
+            ingressHost: staging-api.yas.local.com
   template:
     metadata:
       name: '{{name}}-staging'
@@ -96,8 +85,8 @@ spec:
             # This perfectly injects your Jenkins dynamic variables
             - name: '{{imagePath}}'
               value: '{{imageRepo}}'
-            - name: '{{tagPath}}'         # <--- ADD THIS
-              value: '{{tagValue}}'       # <--- ADD THIS
+            - name: ingress.hosts[0].host
+              value: '{{ingressHost}}'
             - name: backend.image.pullPolicy
               value: Always
             - name: backend.serviceMonitor.enabled
