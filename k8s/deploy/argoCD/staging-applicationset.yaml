@@ -103,6 +103,10 @@ spec:
             # 3. Catches standard array-based ingress charts
             - name: ingress.hosts[0].host
               value: '{{ingressHost}}'
+            - name: ingress.hosts[0].paths[0].path
+              value: /
+            - name: ingress.hosts[0].paths[0].pathType
+              value: ImplementationSpecific
             - name: backend.serviceMonitor.enabled
               value: "false"
             - name: serviceMonitor.enabled
