@@ -1,7 +1,7 @@
 backend:
   image:
     repository: cibotminhminhchan/yas-product
-    tag: "e8913ab83d3a9ab8c78fba3ef2e65a789cac07de"
+    tag: "88d90072ac4e2b2e11e665e772da16cd026daa9e"
 
   nameOverride: product
   fullnameOverride: product
