@@ -1,7 +1,7 @@
 backend:
   image:
     repository: cibotminhminhchan/yas-inventory
-    tag: "e8913ab83d3a9ab8c78fba3ef2e65a789cac07de"
+    tag: "73898881709ecf26b46ba4fe273d5f800ba66984"
 
   nameOverride: inventory
   fullnameOverride: inventory
