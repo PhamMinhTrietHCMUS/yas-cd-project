@@ -1,7 +1,7 @@
 ui:
   image:
     repository: cibotminhminhchan/yas-backoffice-ui
-    tag: "ac4bc75e83bc8057ae26208771f9ecacc2616ea8"
+    tag: "2f1e0e07da69a721f0dff465eeb20afe08fdae06"
   nameOverride: backoffice-ui
   fullnameOverride: backoffice-ui
   ingress:
