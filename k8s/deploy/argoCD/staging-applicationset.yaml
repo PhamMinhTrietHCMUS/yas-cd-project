@@ -60,11 +60,11 @@ spec:
             imageRepo: cibotminhminhchan/yas-backoffice-bff
             ingressHost: staging-backoffice.yas.local.com
             syncWave: "2"
-          - name: swagger-ui
-            imagePath: image.repository
-            imageRepo: swaggerapi/swagger-ui
-            ingressHost: staging-swagger.yas.local.com
-            syncWave: "2"
+          # - name: swagger-ui
+          #   imagePath: image.repository
+          #   imageRepo: swaggerapi/swagger-ui
+          #   ingressHost: staging-swagger.yas.local.com
+          #   syncWave: "2" // this now needs to be its own thing
 
           # --- Wave 3: Frontend UIs ---
           - name: storefront-ui
