@@ -1,7 +1,7 @@
 backend:
   image:
     repository: cibotminhminhchan/yas-tax
-    tag: "3124adab27bc51d8e3fa4645c972d80e71611f56"
+    tag: "0bb741e806ed2d5dd7f8e4850ae9c8cf1814369c"
 
   nameOverride: tax
   fullnameOverride: tax
