@@ -1,7 +1,7 @@
 backend:
   image:
     repository: cibotminhminhchan/yas-storefront-bff
-    tag: "3124adab27bc51d8e3fa4645c972d80e71611f56"
+    tag: "88d90072ac4e2b2e11e665e772da16cd026daa9e"
 
   nameOverride: storefront-bff
   fullnameOverride: storefront-bff
