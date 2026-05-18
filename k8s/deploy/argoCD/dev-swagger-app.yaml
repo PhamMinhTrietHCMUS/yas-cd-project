@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: swagger-ui-dev
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
+    targetRevision: HEAD
+    path: k8s/charts/swagger-ui
+    helm:
+      parameters:
+        - name: image.tag
+          value: "v5.17.1"
+        - name: ingress.host
+          value: dev-swagger.yas.local.com
+        - name: ingress.hosts[0].host
+          value: dev-swagger.yas.local.com
+        - name: ingress.hosts[0].paths[0].path
+          value: /
+        - name: ingress.hosts[0].paths[0].pathType
+          value: ImplementationSpecific
+        # --- THE dev SPECIFIC OVERRIDE ---
+        - name: urls
+          value: "[{ url: 'http://dev-api.yas.local.com/product/v3/api-docs', name: 'Product' }, { url: 'http://dev-api.yas.local.com/media/v3/api-docs', name: 'Media' }, { url: 'http://dev-api.yas.local.com/customer/v3/api-docs', name: 'Customer' }, { url: 'http://dev-api.yas.local.com/cart/v3/api-docs', name: 'Cart'}, { url: 'http://dev-api.yas.local.com/order/v3/api-docs', name: 'Order'}, { url: 'http://dev-api.yas.local.com/inventory/v3/api-docs', name: 'Inventory'}, { url: 'http://dev-api.yas.local.com/tax/v3/api-docs', name: 'Tax' }, { url: 'http://dev-api.yas.local.com/search/v3/api-docs', name: 'Search'}]"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
