@@ -13,6 +13,8 @@ spec:
     path: k8s/charts/swagger-ui
     helm:
       parameters:
+        - name: image.tag
+          value: "v5.17.1"
         - name: ingress.host
           value: staging-swagger.yas.local.com
         - name: ingress.hosts[0].host
