@@ -15,6 +15,9 @@ spec:
     accessControlAllowHeaders:
       - "*"
     accessControlAllowOriginList:
+      - "http://staging-swagger.yas.local.com"
+      - "http://dev-swagger.yas.local.com"
+      - "http://swagger.yas.local.com"
       - "*"
     accessControlMaxAge: 100
     addVaryHeader: true
