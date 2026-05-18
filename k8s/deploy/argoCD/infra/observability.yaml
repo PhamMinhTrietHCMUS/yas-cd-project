@@ -117,6 +117,8 @@ kind: Application
 metadata:
   name: observability-grafana-operator
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
@@ -139,6 +141,8 @@ kind: Application
 metadata:
   name: observability-opentelemetry-operator
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
@@ -161,6 +165,8 @@ kind: Application
 metadata:
   name: observability-opentelemetry-collector
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
@@ -211,6 +217,8 @@ kind: Application
 metadata:
   name: observability-grafana
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
