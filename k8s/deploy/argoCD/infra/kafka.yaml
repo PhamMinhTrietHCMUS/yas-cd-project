@@ -1,0 +1,87 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-operator
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://strimzi.io/charts/
+    chart: strimzi-kafka-operator
+    targetRevision: "*"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kafka
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-cluster
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
+    targetRevision: main
+    path: k8s/deploy/kafka/kafka-cluster
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kafka
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: akhq
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://akhq.io/
+    chart: akhq
+    targetRevision: "*"
+    helm:
+      values: |
+        configuration:
+          akhq:
+            server:
+              access-log:
+                enabled: false
+                name: org.akhq.log.access
+            connections:
+              kafka-connection:
+                properties:
+                  bootstrap.servers: kafka-cluster-kafka-bootstrap:9092
+                connect:
+                  - name: debezium-connect-cluster
+                    url: http://debezium-connect-cluster-connect-api:8083
+        hostname: akhq.yas.local.com
+        ingress:
+          enabled: true
+          ingressClassName: nginx
+          annotations: {}
+          paths:
+            - /
+          hosts:
+            - akhq.yas.local.com
+          tls: []
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kafka
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
