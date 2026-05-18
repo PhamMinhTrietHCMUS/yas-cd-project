@@ -531,7 +531,7 @@ spec:
           - http://localhost:8087/*
           - http://staging-backoffice.yas.local.com/*
           - http://dev-backoffice.yas.local.com/*
-        webOrigins: [ ]
+        webOrigins: ["*", "+"]
         notBefore: 0
         bearerOnly: false
         consentRequired: false
@@ -826,7 +826,7 @@ spec:
           - http://localhost:8087/*
           - http://staging-storefront.yas.local.com/*
           - http://dev-storefront.yas.local.com/*
-        webOrigins: [ ]
+        webOrigins: ["*", "+"]
         notBefore: 0
         bearerOnly: false
         consentRequired: false
