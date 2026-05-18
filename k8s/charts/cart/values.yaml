@@ -1,7 +1,7 @@
 backend:
   image:
     repository: cibotminhminhchan/yas-cart
-    tag: "ac4bc75e83bc8057ae26208771f9ecacc2616ea8"
+    tag: "2f1e0e07da69a721f0dff465eeb20afe08fdae06"
 
   nameOverride: cart
   fullnameOverride: cart
