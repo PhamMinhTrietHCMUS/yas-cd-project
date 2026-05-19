@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: observability-loki
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
@@ -47,6 +49,8 @@ kind: Application
 metadata:
   name: observability-tempo
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
@@ -74,6 +78,8 @@ kind: Application
 metadata:
   name: observability-prometheus
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
@@ -211,6 +217,8 @@ kind: Application
 metadata:
   name: observability-promtail
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
@@ -221,7 +229,7 @@ spec:
       values: |
         config:
           clients:
-            - url: http://opentelemetry-collector:3500/loki/api/v1/push
+            - url: http://loki-gateway/loki/api/v1/push
           snippets:
             pipelineStages:
               - docker: {}
