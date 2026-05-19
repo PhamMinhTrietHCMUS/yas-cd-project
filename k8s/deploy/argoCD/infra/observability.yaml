@@ -94,11 +94,14 @@ spec:
         prometheus:
           prometheusSpec:
             enableRemoteWriteReceiver: true
+          service:
+            type: NodePort
+            nodePort: 31877
         grafana:
           assertNoLeakedSecrets: false
           service:
             type: NodePort
-            nodePort: 31875
+            nodePort: 31876
           grafana.ini:
             database:
               type: postgres
