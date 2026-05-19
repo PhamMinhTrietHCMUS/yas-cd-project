@@ -30,6 +30,12 @@ spec:
     repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
     targetRevision: main
     path: k8s/deploy/elasticsearch/elasticsearch-cluster
+    helm:
+      parameters:
+        - name: elasticsearch.replicas
+          value: "1"
+        - name: kibana.ingress.hostname
+          value: "kibana.yas.local.com"
   destination:
     server: https://kubernetes.default.svc
     namespace: elasticsearch
