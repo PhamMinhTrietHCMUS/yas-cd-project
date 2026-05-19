@@ -18,6 +18,22 @@ spec:
     repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
     targetRevision: main
     path: k8s/deploy/keycloak/keycloak
+    helm:
+      parameters:
+        - name: hostname
+          value: "identity.yas.local.com"
+        - name: postgresql.username
+          value: "yasadminuser"
+        - name: postgresql.password
+          value: "admin"
+        - name: bootstrapAdmin.username
+          value: "admin"
+        - name: bootstrapAdmin.password
+          value: "admin"
+        - name: backofficeRedirectUrl
+          value: "http://*"
+        - name: storefrontRedirectUrl
+          value: "http://*"
   destination:
     server: https://kubernetes.default.svc
     namespace: keycloak
