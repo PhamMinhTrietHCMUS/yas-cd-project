@@ -23,6 +23,8 @@ spec:
           commonConfig:
             replication_factor: 1
           auth_enabled: false
+          # For lab/demo environment without object storage schema bootstrap.
+          useTestSchema: true
         test:
           enabled: false
         storage:
@@ -93,6 +95,7 @@ spec:
           prometheusSpec:
             enableRemoteWriteReceiver: true
         grafana:
+          assertNoLeakedSecrets: false
           grafana.ini:
             database:
               type: postgres
@@ -151,9 +154,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: oci://ghcr.io/grafana-operator/helm-charts
+    repoURL: https://grafana.github.io/helm-charts
     chart: grafana-operator
-    targetRevision: v5.0.2
+    targetRevision: "*"
   destination:
     server: https://kubernetes.default.svc
     namespace: observability
@@ -178,6 +181,11 @@ spec:
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     chart: opentelemetry-operator
     targetRevision: "*"
+    helm:
+      values: |
+        admissionWebhooks:
+          certManager:
+            enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: observability
