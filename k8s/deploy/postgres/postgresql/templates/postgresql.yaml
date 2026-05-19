@@ -5,6 +5,8 @@ metadata:
   name: "postgresql"
   labels:
     team: acid
+  annotations: # <--- Must be its own section!
+    argocd.argoproj.io/sync-options: Prune=false
 
 spec:
   streams:
@@ -22,6 +24,7 @@ spec:
   numberOfInstances: {{ .Values.replicas }}
   volume:
     size: {{ .Values.volumeSize }}
+    storageClass: local-path-retain # <--- FORCE IT HERE
   users:
     {{ .Values.username }}:
       - superuser
