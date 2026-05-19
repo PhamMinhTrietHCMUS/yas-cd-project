@@ -421,7 +421,7 @@ spec:
     appProtocol: http
     protocol: TCP
     port: 20001
-    nodePort: 31874 # <-- ADD THIS LINE
+    nodePort: 31874
   selector:
     app.kubernetes.io/name: kiali
     app.kubernetes.io/instance: kiali
