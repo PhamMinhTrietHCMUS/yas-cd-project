@@ -1,0 +1,80 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: enable-strict-mtls-dev
+  namespace: dev
+spec:
+  mtls:
+    mode: STRICT
+
+---
+# AuthorizationPolicy: allow only `order` service to call `cart` service
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-order-to-cart
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: cart
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/dev/sa/order"]
+
+---
+# AuthorizationPolicy: allow only `order` service to call `inventory` service
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-order-to-inventory
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: inventory
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/dev/sa/order"]
+
+---
+# AuthorizationPolicy: allow only `order` service to call `tax` service
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-order-to-tax
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: tax
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/dev/sa/order"]
+
+---
+# VirtualService for tax service: retry on 5xx
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: tax-retry
+  namespace: dev
+spec:
+  hosts:
+  - tax
+  http:
+  - route:
+    - destination:
+        host: tax
+        port:
+          number: 8080
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+      retryOn: "5xx"
