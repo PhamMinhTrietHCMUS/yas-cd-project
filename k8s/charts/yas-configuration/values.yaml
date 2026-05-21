@@ -284,6 +284,9 @@ recommendationApplicationConfig:
               model: text-embedding-3-small
 
 sampledataApplicationConfig:
+  server:
+    servlet:
+      context-path: /sampledata
   spring:
     datasource:
       product:
