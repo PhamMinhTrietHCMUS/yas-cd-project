@@ -48,6 +48,11 @@ spec:
             imageRepo: cibotminhminhchan/yas-search
             ingressHost: internal-only.local
             syncWave: "1"
+          - name: sampledata
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-sampledata
+            ingressHost: internal-only.local
+            syncWave: "1"
 
           # --- Wave 2: BFFs & Docs ---
           - name: storefront-bff
