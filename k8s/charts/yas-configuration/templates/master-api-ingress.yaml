@@ -93,3 +93,10 @@ spec:
                 name: search
                 port:
                   number: 80
+          - path: /sampledata
+            pathType: Prefix
+            backend:
+              service:
+                name: sampledata
+                port:
+                  number: 80
