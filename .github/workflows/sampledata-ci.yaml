@@ -1,0 +1,100 @@
+name: sampledata-ci
+
+on:
+  push:
+    branches: [ "*" ] # Triggers on ALL branches so developers can test dev_* branches
+    tags: [ "v*" ]
+    paths:
+      - "sampledata/**"
+  workflow_dispatch:
+
+jobs:
+  Build-and-Push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build sampledata Service (and dependencies)
+        # Runs from root. -pl specifies the module, -am builds its local dependencies.
+        run: mvn -B clean install -pl sampledata -am -DskipTests
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./sampledata
+          push: true
+          # Multi-tagging: tags with BOTH the branch name AND the commit hash
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/yas-sampledata:${{ github.ref_name }}
+            ${{ secrets.DOCKER_USERNAME }}/yas-sampledata:${{ github.sha }}
+      
+      - name: Update Helm Values & Push to Git (Smart Router)
+        run: |
+          # 1. Setup a bot Git Identity
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git config rebase.autoStash true
+          git restore .
+
+          # 2. THE SMART ROUTER (Determines Dev vs. Staging)
+          if [ "${{ github.ref_type }}" == "tag" ]; then
+            echo "🚀 Tag detected! Routing update to Staging..."
+            TARGET_FILE="k8s/charts/sampledata/values-staging.yaml"
+            TARGET_TAG="${{ github.ref_name }}" # Uses the tag name (e.g., v1.0.0)
+            COMMIT_MSG="chore(sampledata): staging release $TARGET_TAG [skip ci]"
+            
+            # Failsafe: If values-staging.yaml doesn't exist yet, create it by copying the dev file!
+            if [ ! -f "$TARGET_FILE" ]; then
+              echo "⚠️ Staging file missing. Cloning dev values.yaml to create it..."
+              cp k8s/charts/sampledata/values.yaml $TARGET_FILE
+            fi
+            
+            # Since tags aren't branches, we must explicitly tell git to push the file back to main
+            PUSH_TARGET="main"
+          else
+            echo "🛠️ Branch detected! Routing update to Dev..."
+            TARGET_FILE="k8s/charts/sampledata/values.yaml"
+            TARGET_TAG="${{ github.sha }}" # Uses the commit hash (e.g., 8f7b3a2)
+            COMMIT_MSG="chore(sampledata): update dev image to $TARGET_TAG [skip ci]"
+            
+            # Push back to whichever branch triggered the workflow
+            PUSH_TARGET="${{ github.ref_name }}"
+          fi
+
+          # 3. Update the repository and tag in whichever file the router chose
+          sed -i 's|repository: .*|repository: cibotminhminhchan/yas-sampledata|' $TARGET_FILE
+          sed -i "s/tag: .*/tag: \"$TARGET_TAG\"/" $TARGET_FILE
+
+          # 4. Add and Commit the change
+          git add $TARGET_FILE
+          git commit -m "$COMMIT_MSG"
+          
+          # 5. The GitOps Push Retry Loop (Pushing to the correct branch)
+          for i in {1..5}; do
+            git pull --rebase origin $PUSH_TARGET
+            
+            if git push origin HEAD:$PUSH_TARGET; then
+              echo "✅ GitOps Write-Back successful on attempt $i"
+              exit 0
+            fi
+            
+            echo "⚠️ Push collision detected. Retrying in 3 seconds..."
+            sleep 3
+          done
+          
+          echo "❌ Failed to push after 5 attempts."
+          exit 1
