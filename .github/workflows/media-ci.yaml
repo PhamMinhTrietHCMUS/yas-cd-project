@@ -3,6 +3,7 @@ name: media-ci
 on:
   push:
     branches: [ "*" ] # Triggers on ALL branches so developers can test dev_* branches
+    tags: [ "v*" ]
     paths:
       - "media/**"
   workflow_dispatch:
@@ -41,7 +42,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/yas-media:${{ github.ref_name }}
             ${{ secrets.DOCKER_USERNAME }}/yas-media:${{ github.sha }}
       
-      - name: Update Helm Values & Push to Git (GitOps Write-Back)
+      - name: Update Helm Values & Push to Git (Smart Router)
         run: |
           # 1. Setup a bot Git Identity
           git config user.name "github-actions[bot]"
@@ -49,33 +50,51 @@ jobs:
           git config rebase.autoStash true
           git restore .
 
-          # 2. Update the repository (using | as delimiter because of the slash in the image name)
-          sed -i 's|repository: .*|repository: cibotminhminhchan/yas-media|' k8s/charts/media/values.yaml
-
-          # 3. Update the tag
-          sed -i 's/tag: .*/tag: "${{ github.sha }}"/' k8s/charts/media/values.yaml
-
-          # 4. Add, Commit, and Push the change
-          git add k8s/charts/media/values.yaml
-          git commit -m "chore(media): update image and tag to ${{ github.sha }} [skip ci]"
-          
-          # 5. The GitOps Push Retry Loop
-          # Try to push up to 5 times to bypass race conditions
-          for i in {1..5}; do
-            # Pull the latest changes and stack our commit on top of them
-            git pull --rebase origin ${{ github.ref_name }}
+          # 2. THE SMART ROUTER (Determines Dev vs. Staging)
+          if [ "${{ github.ref_type }}" == "tag" ]; then
+            echo "🚀 Tag detected! Routing update to Staging..."
+            TARGET_FILE="k8s/charts/media/values-staging.yaml"
+            TARGET_TAG="${{ github.ref_name }}" # Uses the tag name (e.g., v1.0.0)
+            COMMIT_MSG="chore(media): staging release $TARGET_TAG [skip ci]"
             
-            # Try to push. If it succeeds, exit the script cleanly.
-            if git push origin HEAD:${{ github.ref_name }}; then
+            # Failsafe: If values-staging.yaml doesn't exist yet, create it by copying the dev file!
+            if [ ! -f "$TARGET_FILE" ]; then
+              echo "⚠️ Staging file missing. Cloning dev values.yaml to create it..."
+              cp k8s/charts/media/values.yaml $TARGET_FILE
+            fi
+            
+            # Since tags aren't branches, we must explicitly tell git to push the file back to main
+            PUSH_TARGET="main"
+          else
+            echo "🛠️ Branch detected! Routing update to Dev..."
+            TARGET_FILE="k8s/charts/media/values.yaml"
+            TARGET_TAG="${{ github.sha }}" # Uses the commit hash (e.g., 8f7b3a2)
+            COMMIT_MSG="chore(media): update dev image to $TARGET_TAG [skip ci]"
+            
+            # Push back to whichever branch triggered the workflow
+            PUSH_TARGET="${{ github.ref_name }}"
+          fi
+
+          # 3. Update the repository and tag in whichever file the router chose
+          sed -i 's|repository: .*|repository: cibotminhminhchan/yas-media|' $TARGET_FILE
+          sed -i "s/tag: .*/tag: \"$TARGET_TAG\"/" $TARGET_FILE
+
+          # 4. Add and Commit the change
+          git add $TARGET_FILE
+          git commit -m "$COMMIT_MSG"
+          
+          # 5. The GitOps Push Retry Loop (Pushing to the correct branch)
+          for i in {1..5}; do
+            git pull --rebase origin $PUSH_TARGET
+            
+            if git push origin HEAD:$PUSH_TARGET; then
               echo "✅ GitOps Write-Back successful on attempt $i"
               exit 0
             fi
             
-            # If it fails, wait a few seconds and try again
             echo "⚠️ Push collision detected. Retrying in 3 seconds..."
             sleep 3
           done
           
-          # If it fails 5 times, crash the pipeline so you know something is wrong
           echo "❌ Failed to push after 5 attempts."
           exit 1
