@@ -1,0 +1,13 @@
+ui:
+  image:
+    repository: cibotminhminhchan/yas-backoffice
+    tag: "v1.0.0"
+  nameOverride: backoffice-ui
+  fullnameOverride: backoffice-ui
+  ingress:
+    enabled: false
+    # hosts:
+    #   - host: backoffice.yas.local.com
+    #     paths:
+    #       - path: /
+    #         pathType: ImplementationSpecific
