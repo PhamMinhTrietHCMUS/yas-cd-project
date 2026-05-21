@@ -1,7 +1,7 @@
 backend:
   image:
     repository: cibotminhminhchan/yas-sampledata
-    tag: "617cfcb3b00ea00a6bb9fdd801a4098a9b49dbd5"
+    tag: "v1.0.1"
 
   nameOverride: sampledata
   fullnameOverride: sampledata

@@ -1,7 +1,7 @@
 backend:
   image:
     repository: cibotminhminhchan/yas-media
-    tag: "v1.0.0"
+    tag: "v1.0.1"
 
   nameOverride: media
   fullnameOverride: media
