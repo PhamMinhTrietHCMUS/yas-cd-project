@@ -6,6 +6,211 @@ metadata:
 spec:
   mtls:
     mode: STRICT
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-storefront-ui
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: storefront-ui
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-backoffice-ui
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: backoffice-ui
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-swagger-ui
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: swagger-ui
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-storefront-bff
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: storefront-bff
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-backoffice-bff
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: backoffice-bff
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-product
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: product
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-cart
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cart
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-customer
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: customer
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-order
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: order
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-inventory
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: inventory
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-tax
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tax
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-media
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: media
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    80:
+      mode: PERMISSIVE
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: permissive-port80-search
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: search
+  mtls:
+    mode: STRICT
   portLevelMtls:
     80:
       mode: PERMISSIVE
