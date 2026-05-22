@@ -55,3 +55,6 @@ backend:
   extraApplicationConfigPaths:
     - /opt/yas/gateway-routes-config/gateway-routes-config.yaml
     - /opt/yas/extra-config/backoffice-bff-extra-config.yaml
+  env:
+    - name: UI_HOST
+      value: "http://backoffice-ui:3000"
