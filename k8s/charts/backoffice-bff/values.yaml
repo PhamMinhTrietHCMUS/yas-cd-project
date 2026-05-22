@@ -1,7 +1,7 @@
 backend:
   image:
     repository: cibotminhminhchan/yas-backoffice-bff
-    tag: "2f1e0e07da69a721f0dff465eeb20afe08fdae06"
+    tag: "a12a618d0d179ada4cf3388f5fc96400ee932c46"
 
   nameOverride: backoffice-bff
   fullnameOverride: backoffice-bff
