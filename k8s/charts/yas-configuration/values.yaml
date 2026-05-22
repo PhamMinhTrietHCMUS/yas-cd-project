@@ -202,6 +202,7 @@ gatewayRoutesConfig:
               - Path=/**
 
 backofficeBffExtraConfig:
+  UI_HOST: http://backoffice-ui:3000
   spring:
     data:
       redis:
@@ -222,6 +223,7 @@ backofficeBffExtraConfig:
               scope: openid, profile, email, roles
 
 storefrontBffExtraConfig:
+  UI_HOST: http://storefront-ui:3000
   spring:
     data:
       redis:
