@@ -11,7 +11,7 @@ spec:
       mode: PERMISSIVE
 
 ---
-# AuthorizationPolicy: allow only `order` service to call `cart` service
+# AuthorizationPolicy: allow `order` and `storefront-bff` services to call `cart` service
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
@@ -25,10 +25,12 @@ spec:
   rules:
   - from:
     - source:
-        principals: ["cluster.local/ns/dev/sa/order"]
+        principals:
+        - "cluster.local/ns/dev/sa/order"
+        - "cluster.local/ns/dev/sa/storefront-bff"
 
 ---
-# AuthorizationPolicy: allow only `order` service to call `inventory` service
+# AuthorizationPolicy: allow `order`, `storefront-bff`, and `backoffice-bff` services to call `inventory` service
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
@@ -42,7 +44,10 @@ spec:
   rules:
   - from:
     - source:
-        principals: ["cluster.local/ns/dev/sa/order"]
+        principals:
+        - "cluster.local/ns/dev/sa/order"
+        - "cluster.local/ns/dev/sa/storefront-bff"
+        - "cluster.local/ns/dev/sa/backoffice-bff"
 
 ---
 # AuthorizationPolicy: allow only `order` service to call `tax` service
