@@ -1,0 +1,208 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: staging
+  labels:
+    istio-injection: enabled
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: yas-configuration-staging
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0" # This forces it to deploy FIRST
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
+    targetRevision: HEAD
+    path: k8s/charts/yas-configuration
+    helm:
+      parameters:
+        # Pushing the staging prefix to the newly parameterized master-api-ingress
+        - name: apiHostname
+          value: staging-api.yas.local.com
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+# initial setup for staging
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: yas-staging-apps
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          # --- Wave 1: Backend Core Services ---
+          - name: product
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-product
+            ingressHost: internal-only.local
+            syncWave: "1"
+          - name: cart
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-cart
+            ingressHost: internal-only.local
+            syncWave: "1"
+          - name: order
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-order
+            ingressHost: internal-only.local
+            syncWave: "1"
+          - name: customer
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-customer
+            ingressHost: internal-only.local
+            syncWave: "1"
+          - name: inventory
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-inventory
+            ingressHost: internal-only.local
+            syncWave: "1"
+          - name: tax
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-tax
+            ingressHost: internal-only.local
+            syncWave: "1"
+          - name: media
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-media
+            ingressHost: internal-only.local
+            syncWave: "1"
+          - name: search
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-search
+            ingressHost: internal-only.local
+            syncWave: "1"
+          # - name: sampledata
+          #   imagePath: backend.image.repository
+          #   imageRepo: cibotminhminhchan/yas-sampledata
+          #   ingressHost: internal-only.local
+          #   syncWave: "1"
+
+          # --- Wave 2: BFFs & Docs ---
+          - name: storefront-bff
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-storefront-bff
+            ingressHost: staging-storefront.yas.local.com
+            syncWave: "2"
+          - name: backoffice-bff
+            imagePath: backend.image.repository
+            imageRepo: cibotminhminhchan/yas-backoffice-bff
+            ingressHost: staging-backoffice.yas.local.com
+            syncWave: "2"
+          # - name: swagger-ui
+          #   imagePath: image.repository
+          #   imageRepo: swaggerapi/swagger-ui
+          #   ingressHost: staging-swagger.yas.local.com
+          #   syncWave: "2" // this now needs to be its own thing
+
+          # --- Wave 3: Frontend UIs ---
+          - name: storefront-ui
+            imagePath: ui.image.repository
+            imageRepo: cibotminhminhchan/yas-storefront
+            ingressHost: staging-storefront.yas.local.com
+            syncWave: "3"
+          - name: backoffice-ui
+            imagePath: ui.image.repository
+            imageRepo: cibotminhminhchan/yas-backoffice
+            ingressHost: staging-backoffice.yas.local.com
+            syncWave: "3"
+  template:
+    metadata:
+      name: '{{name}}-staging'
+      annotations:
+        argocd.argoproj.io/sync-wave: '{{syncWave}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
+        targetRevision: HEAD
+        path: 'k8s/charts/{{name}}'
+        helm:
+          valueFiles: 
+            - values-staging.yaml # pick the staging file instead, grab the images with the version tag instead
+          parameters:
+            - name: '{{imagePath}}'
+              value: '{{imageRepo}}'
+            - name: backend.image.pullPolicy
+              value: Always
+            # 1. Catches standard charts (like swagger-ui)
+            - name: ingress.host
+              value: '{{ingressHost}}'
+            # 2. Catches subcharts (like your BFFs and backend services)
+            - name: backend.ingress.host
+              value: '{{ingressHost}}'
+            # 3. Catches standard array-based ingress charts
+            - name: ingress.hosts[0].host
+              value: '{{ingressHost}}'
+            - name: ingress.hosts[0].paths[0].path
+              value: /
+            - name: ingress.hosts[0].paths[0].pathType
+              value: ImplementationSpecific
+            - name: backend.serviceMonitor.enabled
+              value: "false"
+            - name: serviceMonitor.enabled
+              value: "false"
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: staging
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+# applicationset for pods
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: swagger-ui-staging
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/PhamMinhTrietHCMUS/yas-cd-project.git
+    targetRevision: HEAD
+    path: k8s/charts/swagger-ui
+    helm:
+      parameters:
+        - name: image.tag
+          value: "v5.17.1"
+        - name: ingress.host
+          value: staging-swagger.yas.local.com
+        - name: ingress.hosts[0].host
+          value: staging-swagger.yas.local.com
+        - name: ingress.hosts[0].paths[0].path
+          value: /
+        - name: ingress.hosts[0].paths[0].pathType
+          value: ImplementationSpecific
+        # --- THE STAGING SPECIFIC OVERRIDE ---
+        - name: urls
+          value: "[{ url: 'http://staging-api.yas.local.com/product/v3/api-docs', name: 'Product' }, { url: 'http://staging-api.yas.local.com/media/v3/api-docs', name: 'Media' }, { url: 'http://staging-api.yas.local.com/customer/v3/api-docs', name: 'Customer' }, { url: 'http://staging-api.yas.local.com/cart/v3/api-docs', name: 'Cart'}, { url: 'http://staging-api.yas.local.com/order/v3/api-docs', name: 'Order'}, { url: 'http://staging-api.yas.local.com/inventory/v3/api-docs', name: 'Inventory'}, { url: 'http://staging-api.yas.local.com/tax/v3/api-docs', name: 'Tax' }, { url: 'http://staging-api.yas.local.com/search/v3/api-docs', name: 'Search'}]"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+# swagger-ui
