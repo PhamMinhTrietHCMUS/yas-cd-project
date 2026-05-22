@@ -10,7 +10,7 @@ spec:
     name: Loki
     type: loki
     uid: loki
-    url: http://loki-gateway
+    url: http://observability-loki-gateway
     access: proxy
     jsonData:
       httpMethod: GET
