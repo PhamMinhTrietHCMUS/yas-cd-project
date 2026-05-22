@@ -11,7 +11,7 @@ spec:
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: permissive-port80-storefront-ui
+  name: permissive-port3000-storefront-ui
   namespace: dev
 spec:
   selector:
@@ -20,14 +20,14 @@ spec:
   mtls:
     mode: STRICT
   portLevelMtls:
-    80:
+    3000:
       mode: PERMISSIVE
 
 ---
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: permissive-port80-backoffice-ui
+  name: permissive-port3000-backoffice-ui
   namespace: dev
 spec:
   selector:
@@ -36,14 +36,14 @@ spec:
   mtls:
     mode: STRICT
   portLevelMtls:
-    80:
+    3000:
       mode: PERMISSIVE
 
 ---
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: permissive-port80-swagger-ui
+  name: permissive-port8080-swagger-ui
   namespace: dev
 spec:
   selector:
@@ -52,7 +52,7 @@ spec:
   mtls:
     mode: STRICT
   portLevelMtls:
-    80:
+    8080:
       mode: PERMISSIVE
 
 ---
