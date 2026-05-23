@@ -198,7 +198,7 @@ spec:
       values: |
         admissionWebhooks:
           certManager:
-            enabled: false
+            enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: observability
