@@ -1,7 +1,7 @@
 ui:
   image:
     repository: cibotminhminhchan/yas-storefront
-    tag: "88d90072ac4e2b2e11e665e772da16cd026daa9e"
+    tag: "40e4dcdcbccb3c0677b2f3bfd04504b3a015081e"
   nameOverride: storefront-ui
   fullnameOverride: storefront-ui
 #  extraVolumes:
